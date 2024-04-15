@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@kubernetes/client-node": "^0.20.0",
+    "axios": "^1.6.8",
+    "kubernetes-client": "^9.0.0"
+  }
+}

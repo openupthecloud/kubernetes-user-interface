@@ -1,5 +1,9 @@
 tasks:
   - command: |
+      ./scripts/aws-auth.sh
+      gp sync-done authenticate
+  - command: |
+      gp sync-await authenticate
       cd app 
       npm install
       npm run start
