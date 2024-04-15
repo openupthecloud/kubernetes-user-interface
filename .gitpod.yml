@@ -1,0 +1,10 @@
+tasks:
+  - command: |
+      cd app 
+      npm install
+      npm run start
+
+ports:
+  - port: 3000
+    onOpen: open-browser
+    visibility: private
