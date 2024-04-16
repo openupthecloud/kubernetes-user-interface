@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 
 <head>
   <meta charset="utf-8" />
@@ -22,12 +22,17 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
+
+  <!-- TODO: Remove from CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap" rel="stylesheet">
+
   <title>Kubernetes Dashboard</title>
 </head>
 
-<body>
+<body class="h-full" style="font-family: Fira Code, monospace">
   <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div id="root"></div>
+  <div id="root" class="h-full bg-gray-700"></div>
   <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
