@@ -1,14 +1,14 @@
 tasks:
   - name: backend
     command: |
+      ./scripts/aws-auth.sh
       cd backend
       npm install
       node node.js
 
-  - name: backend
+  - name: frontend
     command: |
-      ./scripts/aws-auth.sh
-      cd my-app 
+      cd frontend 
       npm install
       npm run start
 
