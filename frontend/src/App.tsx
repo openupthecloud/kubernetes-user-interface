@@ -1,10 +1,7 @@
-import axios from 'axios';
-import 'axios';
 import { useState, useEffect } from 'react';
-import { Square2StackIcon } from '@heroicons/react/24/solid'
-import { StopCircleIcon } from '@heroicons/react/24/solid'
+import { StopCircleIcon, Square2StackIcon, ArrowPathIcon } from '@heroicons/react/24/solid'
 import { format, formatDistance, formatRelative, subDays } from 'date-fns'
-
+import { dataServiceInstance } from './DataService'
 
 function App() {
 
@@ -14,33 +11,34 @@ function App() {
   const [namespace, setNamespace] = useState("default");
   const [namespaces, setNamespaces] = useState([{ name: "default", labels: [] }]);
 
+  // TODO: Think of better name for function
+  const updateNamespaces = (value: string) => {
+    dataServiceInstance.setNamespace(value)
+    setNamespace(dataServiceInstance.namespace)
+  }
+
   useEffect(() => {
-    axios.get(`http://localhost:3002/pods/${namespace}`)
-      .then((data) => {
-        setPods(data.data)
-      })
+    dataServiceInstance
+      .getPods()
+      .then(setPods)
   }, [namespace])
 
   useEffect(() => {
-    axios.get("http://localhost:3002/namespaces")
-      .then((data) => {
-        setNamespaces(data.data)
-      })
+    dataServiceInstance
+      .getNamespaces()
+      .then(setNamespaces)
   }, [])
 
   useEffect(() => {
-    axios.get(`http://localhost:3002/deployments/${namespace}`)
-      .then((data) => {
-        setDeployments(data.data)
-      })
-  }, [])
+    dataServiceInstance
+      .getDeployments()
+      .then(setDeployments)
+  }, [namespace])
 
   useEffect(() => {
-    axios.get(`http://localhost:3002/events/${namespace}`)
-      .then((data) => {
-        // TODO: Reverse on server
-        setEvents(data.data.reverse())
-      })
+    dataServiceInstance
+      .getEvents()
+      .then(setEvents)
   }, [namespace])
 
   return (
@@ -49,7 +47,7 @@ function App() {
         <div className="grid grid-cols-6 gap-4">
           <div className="col-span-5"><h1 className="text-1xl text-white font-bold uppercase">Kubernetes Dashboard</h1></div>
           <div>
-            <select onChange={(e) => setNamespace(e.currentTarget.value)} className="w-full text-center rounded-lg float-right">
+            <select onChange={(e) => updateNamespaces(e.currentTarget.value)} className="w-full text-center rounded-lg float-right">
               {
                 namespaces.map((namespace: any) => {
                   return <option value={namespace.name}>{namespace.name}</option>
@@ -64,6 +62,9 @@ function App() {
         <h2 className="text-2xl text-white font-bold bg-gray-700 p-2 mb-4">
           <StopCircleIcon className="h-8 w-8 inline pr-2" />
           Deployments ({deployments.length || 0})
+          <button className="float-right" onClick={() => { dataServiceInstance.getDeployments().then(setDeployments) }} >
+            <ArrowPathIcon className="h-8 w-8 inline pr-2"></ArrowPathIcon>
+          </button>
         </h2>
         <table className="text-white table-fixed w-full">
           <thead>
@@ -91,6 +92,9 @@ function App() {
         <h2 className="text-2xl text-white font-bold bg-gray-700 p-2 mb-4">
           <StopCircleIcon className="h-8 w-8 inline pr-2" />
           Pods ({pods.length || 0})
+          <button className="float-right" onClick={() => { dataServiceInstance.getPods().then(setPods) }} >
+            <ArrowPathIcon className="h-8 w-8 inline pr-2"></ArrowPathIcon>
+          </button>
         </h2>
         <table className="text-white table-fixed w-full">
           <thead>
@@ -120,6 +124,9 @@ function App() {
         <h2 className="text-2xl text-white font-bold bg-gray-700 p-2 mb-4">
           <Square2StackIcon className="h-8 w-8 inline pr-2" />
           Events ({events.length || 0})
+          <button className="float-right" onClick={() => { dataServiceInstance.getEvents().then(setEvents) }} >
+            <ArrowPathIcon className="h-8 w-8 inline pr-2"></ArrowPathIcon>
+          </button>
         </h2>
         <table className="text-white table-fixed w-full">
           <thead>

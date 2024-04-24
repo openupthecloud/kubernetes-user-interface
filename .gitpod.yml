@@ -2,6 +2,7 @@ tasks:
   - name: backend
     command: |
       ./scripts/aws-auth.sh
+      touch backend/config.yml
       cd backend
       npm install
       node node.js
