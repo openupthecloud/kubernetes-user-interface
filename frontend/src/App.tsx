@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { StopCircleIcon, Square2StackIcon, ArrowPathIcon } from '@heroicons/react/24/solid'
 import { format, formatDistance, formatRelative, subDays } from 'date-fns'
 import { dataServiceInstance } from './DataService'
+import { StatusComponent } from './StatusComponent'
 
 function App() {
 
@@ -106,7 +107,10 @@ function App() {
             pods.map((pod: any) => {
               return <tr className="border-2 border-slate-700">
                 <td className="p-2 font-bold">{pod.name}</td>
-                <td className="p-2 font-bold">{pod.phase}</td>
+                <td className="p-2 font-bold">
+                  <StatusComponent status={pod.phase} />
+                  {pod.phase}
+                </td>
                 <td className="p-2">
                   {
                     Object.keys(pod.labels).map((key) => (

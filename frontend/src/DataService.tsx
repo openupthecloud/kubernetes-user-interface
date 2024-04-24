@@ -28,8 +28,7 @@ class DataService {
 
     async getEvents() {
         const { data } = await axios.get(`http://localhost:3002/events/${this.namespace}`)
-        // TODO: Reverse on server
-        return data.reverse();
+        return data;
     }
 }
 

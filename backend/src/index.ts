@@ -68,7 +68,8 @@ app.get('/events/:namespace', async (request: Request, response: Response) => {
             name: response.metadata.name,
             timestamp: response.metadata.creationTimestamp
         }))
-        response.send(result);
+        // Request array as sorted from API
+        response.send(result.sort((a: any, b: any) => b.timestamp - a.timestamp));
     } catch (err) {
         console.error('err', err);
         response.send("failure");
