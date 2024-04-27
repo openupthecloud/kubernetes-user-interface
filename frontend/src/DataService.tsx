@@ -30,6 +30,11 @@ class DataService {
         const { data } = await axios.get(`http://localhost:3002/events/${this.namespace}`)
         return data;
     }
+
+    async getServices() {
+        const { data } = await axios.get(`http://localhost:3002/services/${this.namespace}`)
+        return data;
+    }
 }
 
 const dataServiceInstance = new DataService();

@@ -18,9 +18,30 @@ app.get('/pods/:namespace', async (request: Request, response: Response) => {
         console.log(readNamespaceRes.body.items)
         const result = readNamespaceRes.body.items.map((response: any) => ({
             name: response.metadata.name,
+            created: response.metadata.creationTimestamp,
             phase: response.status.phase,
             labels: response.metadata.labels,
         }))
+        response.send(result);
+    } catch (err) {
+        console.error('err', err);
+        response.send("failure");
+    }
+});
+
+app.get('/services/:namespace', async (request: Request, response: Response) => {
+    try {
+        const namespace = request.params.namespace || "default"
+        const readNamespaceRes = await k8sApi.listNamespacedService(namespace);
+        console.log(readNamespaceRes.body.items)
+        const result = readNamespaceRes.body.items
+            .filter((response: any) => response.status.loadBalancer.ingress)
+            .map((response: any) => ({
+                name: response.metadata.name,
+                type: response.spec.type,
+                port: response.spec.ports[0].port,
+                status: response.status.loadBalancer.ingress[0]?.hostname
+            }))
         response.send(result);
     } catch (err) {
         console.error('err', err);
@@ -63,8 +84,10 @@ app.get('/events/:namespace', async (request: Request, response: Response) => {
     try {
         const namespace = request.params.namespace || "default"
         const readNamespaceRes = await k8sApi.listNamespacedEvent(namespace);
+        console.log(readNamespaceRes.body.items)
         const result = readNamespaceRes.body.items.map((response: any) => ({
             message: response.message,
+            object: response.involvedObject.kind,
             name: response.metadata.name,
             timestamp: response.metadata.creationTimestamp
         }))

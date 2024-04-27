@@ -1,12 +1,13 @@
 // TODO: Add types
 
 interface StatusMap {
-    [key: string]: string | undefined
+    [key: string]: string
 }
 
 const StatusComponent = ({ status }: { status: string }) => {
     const mapStatuses: StatusMap = {
-        "Running": "🟢"
+        "Running": "🟢",
+        "Pending": "🟠"
     }
     return <span>{mapStatuses[status]} </span>
 }
