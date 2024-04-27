@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { StopCircleIcon, Square2StackIcon, ArrowPathIcon } from '@heroicons/react/24/solid'
 import { format } from 'date-fns'
-import { dataServiceInstance } from './DataService'
-import { StatusComponent } from './StatusComponent'
-import { MessageIcon } from './MessageIcon'
+import { dataServiceInstance } from './services/DataService'
+import { StatusComponent } from './components/StatusComponent'
+import { HeaderComponent } from './components/HeaderComponent'
+import { MessageIcon } from './components/MessageIcon'
 
 function App() {
 
@@ -52,29 +52,29 @@ function App() {
 
   return (
     <div>
-      <div className="p-4 container mx-auto px-24">
-        <div className="grid grid-cols-6 gap-4">
-          <div className="col-span-5"><h1 className="text-1xl text-white font-bold uppercase">Kubernetes Dashboard</h1></div>
-          <div className="col-span-0">
-            <select onChange={(e) => updateNamespaces(e.currentTarget.value)} className="w-full text-center rounded-lg float-right">
-              {
-                namespaces.map((namespace: any) => {
-                  return <option value={namespace.name}>{namespace.name}</option>
-                })
-              }
-            </select>
+      <div className="border-b-2 border-gray-500 border-solid">
+        <div className="p-6 container mx-auto px-12">
+          <div className="grid grid-cols-6 gap-4">
+            <div className="col-span-5"><h1 className="text-1xl text-white font-bold uppercase">Kubernetes Dashboard</h1></div>
+            <div className="col-span-0">
+              <select onChange={(e) => updateNamespaces(e.currentTarget.value)} className="w-full text-center rounded-lg float-right">
+                {
+                  namespaces.map((namespace: any) => {
+                    return <option value={namespace.name}>{namespace.name}</option>
+                  })
+                }
+              </select>
+            </div>
           </div>
         </div>
       </div>
-      <div className="container mx-auto px-36 py-24 h-full bg-gray-600">
-
-        <h2 className="text-xl text-white font-bold bg-gray-700 p-2 mb-4">
-          <StopCircleIcon className="h-8 w-8 inline pr-2" />
-          Deployments ({deployments.length || 0})
-          <button className="float-right" onClick={() => { dataServiceInstance.getDeployments().then(setDeployments) }} >
-            <ArrowPathIcon className="h-8 w-8 inline pr-2"></ArrowPathIcon>
-          </button>
-        </h2>
+      <div className="container mx-auto px-12 py-12 h-full bg-gray-600">
+        <HeaderComponent
+          text="Deployments"
+          icon="StopCircleIcon"
+          refresh={() => { dataServiceInstance.getDeployments().then(setDeployments) }}
+          count={deployments.length}
+        />
         <table className="text-white w-full">
           <thead>
             <tr>
@@ -100,13 +100,12 @@ function App() {
 
         <br />
 
-        <h2 className="text-xl text-white font-bold bg-gray-700 p-2 mb-4">
-          <StopCircleIcon className="h-8 w-8 inline pr-2" />
-          Services ({services.length || 0})
-          <button className="float-right" onClick={() => { dataServiceInstance.getServices().then(setServices) }} >
-            <ArrowPathIcon className="h-8 w-8 inline pr-2"></ArrowPathIcon>
-          </button>
-        </h2>
+        <HeaderComponent
+          text="Services"
+          icon="ArrowDownOnSquareStackIcon"
+          refresh={() => { dataServiceInstance.getServices().then(setServices) }}
+          count={services.length}
+        />
         <p></p>
         <table className="text-white w-full">
           <thead>
@@ -131,13 +130,12 @@ function App() {
 
         <br />
 
-        <h2 className="text-xl text-white font-bold bg-gray-700 p-2 mb-4">
-          <StopCircleIcon className="h-8 w-8 inline pr-2" />
-          Pods ({pods.length || 0})
-          <button className="float-right" onClick={() => { dataServiceInstance.getPods().then(setPods) }} >
-            <ArrowPathIcon className="h-8 w-8 inline pr-2"></ArrowPathIcon>
-          </button>
-        </h2>
+        <HeaderComponent
+          text="Pods"
+          icon="CubeIcon"
+          refresh={() => { dataServiceInstance.getPods().then(setPods) }}
+          count={pods.length}
+        />
         <table className="text-white table-fixed w-full">
           <thead>
             <th className="text-left">pod</th>
@@ -169,14 +167,12 @@ function App() {
         </table>
 
         <br />
-
-        <h2 className="text-xl text-white font-bold bg-gray-700 p-2 mb-4">
-          <Square2StackIcon className="h-8 w-8 inline pr-2" />
-          Events ({events.length || 0})
-          <button className="float-right" onClick={() => { dataServiceInstance.getEvents().then(setEvents) }} >
-            <ArrowPathIcon className="h-8 w-8 inline pr-2"></ArrowPathIcon>
-          </button>
-        </h2>
+        <HeaderComponent
+          text="Events"
+          icon="Square2StackIcon"
+          refresh={() => { dataServiceInstance.getEvents().then(setEvents) }}
+          count={events.length}
+        />
         <table className="text-white w-full">
           <thead>
             <th className="text-left">name</th>
