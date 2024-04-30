@@ -75,28 +75,31 @@ function App() {
           refresh={() => { dataServiceInstance.getDeployments().then(setDeployments) }}
           count={deployments.length}
         />
-        <table className="text-white w-full">
-          <thead>
-            <tr>
-              <th className="text-left">deployment</th>
-              <th className="text-left">conditions</th>
-            </tr>
-          </thead>
-          {
-            deployments.map((deployment: any) => {
-              return <tr className="border-2 border-slate-700">
-                <td className="p-2 font-bold">{deployment.name}</td>
-                <td className="p-2">
-                  {
-                    deployment.conditions.map((condition: any) => (
-                      <div><span>{condition.message}</span><br /></div>)
-                    )
-                  }
-                </td>
+        {deployments.length > 0 &&
+          <table className="text-white w-full">
+            <thead>
+              <tr>
+                <th className="text-left">deployment</th>
+                <th className="text-left">conditions</th>
               </tr>
-            })
-          }
-        </table>
+            </thead>
+            {
+              deployments.map((deployment: any) => {
+                return <tr className="border-2 border-slate-700">
+                  <td className="p-2 font-bold">{deployment.name}</td>
+                  <td className="p-2">
+                    {
+                      deployment.conditions.map((condition: any) => (
+                        <div><span>{condition.message}</span><br /></div>)
+                      )
+                    }
+                  </td>
+                </tr>
+              })
+            }
+          </table>
+        }
+        {deployments.length == 0 && <div className="text-center text-white border-2 border-slate-700 p-4"><p> No resources found </p></div >}
 
         <br />
 
@@ -107,7 +110,7 @@ function App() {
           count={services.length}
         />
         <p></p>
-        <table className="text-white w-full">
+        {services.length > 0 && <table className="text-white w-full">
           <thead>
             <tr>
               <th className="text-left">name</th>
@@ -127,6 +130,8 @@ function App() {
             })
           }
         </table>
+        }
+        {services.length == 0 && <div className="text-center text-white border-2 border-slate-700 p-4"><p> No resources found </p></div >}
 
         <br />
 
@@ -136,7 +141,7 @@ function App() {
           refresh={() => { dataServiceInstance.getPods().then(setPods) }}
           count={pods.length}
         />
-        <table className="text-white table-fixed w-full">
+        {pods.length > 0 && <table className="text-white table-fixed w-full">
           <thead>
             <th className="text-left">pod</th>
             <th className="text-left">phase</th>
@@ -165,6 +170,8 @@ function App() {
             })
           }
         </table>
+        }
+        {pods.length == 0 && <div className="text-center text-white border-2 border-slate-700 p-4"><p> No resources found </p></div >}
 
         <br />
         <HeaderComponent
@@ -173,7 +180,7 @@ function App() {
           refresh={() => { dataServiceInstance.getEvents().then(setEvents) }}
           count={events.length}
         />
-        <table className="text-white w-full">
+        {events.length > 0 && <table className="text-white w-full">
           <thead>
             <th className="text-left">name</th>
             <th className="text-left">object</th>
@@ -198,7 +205,8 @@ function App() {
               </tr>
             })
           }
-        </table>
+        </table>}
+        {events.length == 0 && <div className="text-center text-white border-2 border-slate-700 p-4"><p> No resources found </p></div >}
 
       </div>
     </div >
