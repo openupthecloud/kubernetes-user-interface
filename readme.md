@@ -20,10 +20,11 @@ Challenges I had:
 
 ## Roadmap
 
-1. Shoji interaction for events
-1. Fix height background colour issue
+1. **Feature:** Shoji interaction for events
+1. **Chore:** Fix Terraform module for cluster (RBAC roles)
 1. Include nested UX elements
 1. Support sidecars / multi-pods
+1. Show manifest in the UI
 
 1. ECR integration
 1. Fix Kubernetes auth

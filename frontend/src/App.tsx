@@ -8,6 +8,7 @@ import { MessageIcon } from './components/MessageIcon'
 function App() {
 
   const [pods, setPods] = useState([]);
+  const [nodes, setNodes] = useState([]);
   const [deployments, setDeployments] = useState([]);
   const [events, setEvents] = useState([]);
   const [services, setServices] = useState([]);
@@ -19,6 +20,12 @@ function App() {
     dataServiceInstance.setNamespace(value)
     setNamespace(dataServiceInstance.namespace)
   }
+
+  useEffect(() => {
+    dataServiceInstance
+      .getNodes()
+      .then(setNodes)
+  }, [namespace])
 
   useEffect(() => {
     dataServiceInstance
@@ -52,11 +59,14 @@ function App() {
 
   return (
     <div>
+
+      {/* HEADER */}
       <div className="border-b-2 border-gray-500 border-solid">
         <div className="p-6 container mx-auto px-12">
-          <div className="grid grid-cols-6 gap-4">
-            <div className="col-span-5"><h1 className="text-1xl text-white font-bold uppercase">Kubernetes Dashboard</h1></div>
-            <div className="col-span-0">
+          <div className="grid grid-cols-6 gap-4 items-center">
+            <div className="col-span-1 "><h1 className="text-1xl text-white font-bold uppercase"><a href="/">Kubernetes Dashboard</a></h1></div>
+            <div className="col-span-1 text-white bg-gray-500 p-2 text-center"><a href="/admin">Admin</a></div>
+            <div className="col-span-0 col-start-6">
               <select onChange={(e) => updateNamespaces(e.currentTarget.value)} className="w-full text-center rounded-lg float-right">
                 {
                   namespaces.map((namespace: any) => {
@@ -69,147 +79,189 @@ function App() {
         </div>
       </div>
       <div className="container mx-auto px-12 py-12 h-full bg-gray-600">
-        <HeaderComponent
-          text="Deployments"
-          icon="StopCircleIcon"
-          refresh={() => { dataServiceInstance.getDeployments().then(setDeployments) }}
-          count={deployments.length}
-        />
-        {deployments.length > 0 &&
-          <table className="text-white w-full">
+        {(window.location.pathname === "/" || window.location.pathname === "") && <div>
+
+          <HeaderComponent
+            text="Deployments"
+            icon="StopCircleIcon"
+            refresh={() => { dataServiceInstance.getDeployments().then(setDeployments) }}
+            count={deployments.length}
+          />
+          {deployments.length > 0 &&
+            <table className="text-white w-full">
+              <thead>
+                <tr>
+                  <th className="text-left">deployment</th>
+                  <th className="text-left">conditions</th>
+                </tr>
+              </thead>
+              {
+                deployments.map((deployment: any) => {
+                  return <tr className="border-2 border-slate-700">
+                    <td className="p-2 font-bold">{deployment.name}</td>
+                    <td className="p-2">
+                      {
+                        deployment.conditions.map((condition: any) => (
+                          <div><span>{condition.message}</span><br /></div>)
+                        )
+                      }
+                    </td>
+                  </tr>
+                })
+              }
+            </table>
+          }
+          {deployments.length === 0 && <div className="text-center text-white border-2 border-slate-700 p-4"><p> No resources found </p></div >}
+
+          <br />
+
+          <HeaderComponent
+            text="Services"
+            icon="ArrowDownOnSquareStackIcon"
+            refresh={() => { dataServiceInstance.getServices().then(setServices) }}
+            count={services.length}
+          />
+          <p></p>
+          {services.length > 0 && <table className="text-white w-full">
             <thead>
               <tr>
-                <th className="text-left">deployment</th>
-                <th className="text-left">conditions</th>
+                <th className="text-left">name</th>
+                <th className="text-left">URL</th>
               </tr>
             </thead>
             {
-              deployments.map((deployment: any) => {
+              services.map((services: any) => {
                 return <tr className="border-2 border-slate-700">
-                  <td className="p-2 font-bold">{deployment.name}</td>
+                  <td className="p-2 font-bold">{services.name}</td>
                   <td className="p-2">
-                    {
-                      deployment.conditions.map((condition: any) => (
-                        <div><span>{condition.message}</span><br /></div>)
-                      )
-                    }
+                    <a className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600" href={`http://${services.status}:${services.port}`}>
+                      {`http://${services.status}:${services.port}`}
+                    </a>
                   </td>
                 </tr>
               })
             }
           </table>
-        }
-        {deployments.length == 0 && <div className="text-center text-white border-2 border-slate-700 p-4"><p> No resources found </p></div >}
+          }
+          {services.length === 0 && <div className="text-center text-white border-2 border-slate-700 p-4"><p> No resources found </p></div >}
 
-        <br />
+          <br />
 
-        <HeaderComponent
-          text="Services"
-          icon="ArrowDownOnSquareStackIcon"
-          refresh={() => { dataServiceInstance.getServices().then(setServices) }}
-          count={services.length}
-        />
-        <p></p>
-        {services.length > 0 && <table className="text-white w-full">
-          <thead>
-            <tr>
+          <HeaderComponent
+            text="Pods"
+            icon="CubeIcon"
+            refresh={() => { dataServiceInstance.getPods().then(setPods) }}
+            count={pods.length}
+          />
+          {pods.length > 0 && <table className="text-white table-fixed w-full">
+            <thead>
+              <th className="text-left">pod</th>
+              <th className="text-left">phase</th>
+              <th className="text-left">labels</th>
+              <th className="text-left">created</th>
+            </thead>
+            {
+              pods.map((pod: any) => {
+                return <tr className="border-2 border-slate-700">
+                  <td className="p-2 font-bold">{pod.name}</td>
+                  <td className="p-2 font-bold">
+                    <StatusComponent status={pod.phase} />
+                    {pod.phase}
+                  </td>
+                  <td className="p-2">
+                    {
+                      Object.keys(pod.labels).map((key) => (
+                        <div><span>{key}</span><br /></div>)
+                      )
+                    }
+                  </td>
+                  <td className="p-2">
+                    <p>{format(pod.created, 'p - PPP')}</p>
+                  </td>
+                </tr>
+              })
+            }
+          </table>
+          }
+          {pods.length === 0 && <div className="text-center text-white border-2 border-slate-700 p-4"><p> No resources found </p></div >}
+
+          <br />
+          <HeaderComponent
+            text="Events"
+            icon="Square2StackIcon"
+            refresh={() => { dataServiceInstance.getEvents().then(setEvents) }}
+            count={events.length}
+          />
+          {events.length > 0 && <table className="text-white w-full">
+            <thead>
               <th className="text-left">name</th>
-              <th className="text-left">URL</th>
-            </tr>
-          </thead>
-          {
-            services.map((services: any) => {
-              return <tr className="border-2 border-slate-700">
-                <td className="p-2 font-bold">{services.name}</td>
-                <td className="p-2">
-                  <a className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600" href={`http://${services.status}:${services.port}`}>
-                    {`http://${services.status}:${services.port}`}
-                  </a>
-                </td>
-              </tr>
-            })
-          }
-        </table>
+              <th className="text-left">object</th>
+              <th className="text-left">icon</th>
+              <th className="text-left">message</th>
+            </thead>
+            {
+              events.map((event: any) => {
+                return <tr className="border-2 border-slate-700">
+                  <td className="p-2">
+                    <p>
+                      <span className="font-bold">{event.name.split('-')[0]}</span>-
+                      <span>{event.name.split('-')[1]}</span>
+                    </p>
+                    <p>{format(event.timestamp, 'p - PPP')}</p>
+                  </td>
+                  <td className="p-2 font-bold">{event.object}</td>
+                  <td className="p-2 font-bold"><MessageIcon message={event.message} /></td>
+                  <td className="p-2 font-bold">
+                    {event.message}
+                  </td>
+                </tr>
+              })
+            }
+          </table>}
+          {events.length === 0 && <div className="text-center text-white border-2 border-slate-700 p-4"><p> No resources found </p></div >}
+
+        </div>
+
         }
-        {services.length == 0 && <div className="text-center text-white border-2 border-slate-700 p-4"><p> No resources found </p></div >}
 
-        <br />
 
-        <HeaderComponent
-          text="Pods"
-          icon="CubeIcon"
-          refresh={() => { dataServiceInstance.getPods().then(setPods) }}
-          count={pods.length}
-        />
-        {pods.length > 0 && <table className="text-white table-fixed w-full">
-          <thead>
-            <th className="text-left">pod</th>
-            <th className="text-left">phase</th>
-            <th className="text-left">labels</th>
-            <th className="text-left">created</th>
-          </thead>
-          {
-            pods.map((pod: any) => {
-              return <tr className="border-2 border-slate-700">
-                <td className="p-2 font-bold">{pod.name}</td>
-                <td className="p-2 font-bold">
-                  <StatusComponent status={pod.phase} />
-                  {pod.phase}
-                </td>
-                <td className="p-2">
-                  {
-                    Object.keys(pod.labels).map((key) => (
-                      <div><span>{key}</span><br /></div>)
-                    )
-                  }
-                </td>
-                <td className="p-2">
-                  <p>{format(pod.created, 'p - PPP')}</p>
-                </td>
-              </tr>
-            })
-          }
-        </table>
+
+
+        {window.location.pathname === "/admin" && <div>
+          <br />
+          <HeaderComponent
+            text="Nodes"
+            icon="Square2StackIcon"
+            refresh={() => { dataServiceInstance.getNodes().then(setNodes) }}
+            count={nodes.length}
+          />
+          {nodes.length > 0 && <table className="text-white w-full">
+            <thead>
+              <th className="text-left">created timestamp</th>
+              <th className="text-left">capacity - pods</th>
+              <th className="text-left">capacity - cpu</th>
+            </thead>
+            {
+              nodes.map((node: any) => {
+                return <tr className="border-2 border-slate-700">
+
+                  <td className="p-2 font-bold">
+                    <p>{format(node.timestamp, 'p - PPP')}</p>
+                  </td>
+                  <td className="p-2 font-bold"> {node.capacity.cpu} </td>
+                  <td className="p-2 font-bold"> {node.capacity.pods} </td>
+                </tr>
+              })
+            }
+          </table>}
+          {nodes.length === 0 && <div className="text-center text-white border-2 border-slate-700 p-4"><p> No resources found </p></div >}
+
+        </div>
         }
-        {pods.length == 0 && <div className="text-center text-white border-2 border-slate-700 p-4"><p> No resources found </p></div >}
-
-        <br />
-        <HeaderComponent
-          text="Events"
-          icon="Square2StackIcon"
-          refresh={() => { dataServiceInstance.getEvents().then(setEvents) }}
-          count={events.length}
-        />
-        {events.length > 0 && <table className="text-white w-full">
-          <thead>
-            <th className="text-left">name</th>
-            <th className="text-left">object</th>
-            <th className="text-left">icon</th>
-            <th className="text-left">message</th>
-          </thead>
-          {
-            events.map((event: any) => {
-              return <tr className="border-2 border-slate-700">
-                <td className="p-2">
-                  <p>
-                    <span className="font-bold">{event.name.split('-')[0]}</span>-
-                    <span>{event.name.split('-')[1]}</span>
-                  </p>
-                  <p>{format(event.timestamp, 'p - PPP')}</p>
-                </td>
-                <td className="p-2 font-bold">{event.object}</td>
-                <td className="p-2 font-bold"><MessageIcon message={event.message} /></td>
-                <td className="p-2 font-bold">
-                  {event.message}
-                </td>
-              </tr>
-            })
-          }
-        </table>}
-        {events.length == 0 && <div className="text-center text-white border-2 border-slate-700 p-4"><p> No resources found </p></div >}
-
       </div>
-    </div >
+
+
+    </div>
   );
 }
 

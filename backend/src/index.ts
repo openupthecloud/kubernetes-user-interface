@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { k8sApi, appsV1Api } from './kubernetes-client'
-import { V1Service, V1Namespace, V1Deployment, V1DeploymentCondition, V1Pod, CoreV1Event } from '@kubernetes/client-node';
+import { V1Service, V1Namespace, V1Deployment, V1DeploymentCondition, V1Pod, CoreV1Event, V1Node } from '@kubernetes/client-node';
 import express from 'express'
 
 const app = express();
@@ -16,6 +16,7 @@ app.get('/pods/:namespace', async (request: Request, response: Response) => {
     try {
         const namespace = request.params.namespace || "default"
         const readNamespaceRes = await k8sApi.listNamespacedPod(namespace);
+        console.log(readNamespaceRes.body.items)
         const result = readNamespaceRes.body.items.map((response: V1Pod) => ({
             name: response?.metadata?.name,
             created: response?.metadata?.creationTimestamp,
@@ -46,6 +47,26 @@ app.get('/services/:namespace', async (request: Request, response: Response) => 
                 type: response?.spec?.type,
                 port: response?.spec?.ports ? response?.spec?.ports[0].port : undefined,
                 status: response?.status?.loadBalancer?.ingress ? response?.status?.loadBalancer?.ingress[0]?.hostname : undefined
+            }))
+        response.send(result);
+    } catch (err) {
+        console.error('err', err);
+        response.send("failure");
+    }
+});
+
+app.get('/nodes/:namespace', async (request: Request, response: Response) => {
+    try {
+        const namespace = request.params.namespace || "default"
+        const readNamespaceRes = await k8sApi.listNode(namespace);
+        console.log(readNamespaceRes.body.items)
+        const result = readNamespaceRes.body.items
+            .map((response: V1Node) => ({
+                timestamp: response?.metadata?.creationTimestamp,
+                capacity: {
+                    pods: response?.status?.capacity?.pods,
+                    cpu: response?.status?.capacity?.cpu,
+                }
             }))
         response.send(result);
     } catch (err) {
