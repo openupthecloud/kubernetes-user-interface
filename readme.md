@@ -6,14 +6,13 @@
 ## Vision
 
 1. I tried some existing Kubernetes dashboards e.g. https://backstage.io/docs/features/kubernetes/
-    * Overall, not bad, but wanted something
+    * Overall, not bad, but wanted something better
 2. I tried EKS dashboard, but it was really painful
 3. I tried the kubctl CLI, but it's too much effort, okay for actions, not good for overviews
 - I also wanted something I could self-host deploy, and easily hook up to a cluster
     * Kinda like building my own "PaaS" UI over EKS
 
-Challenges I had: 
-
+**Challenges I had:**
 1. Too much Kubernetes specifics, as a developer I want signal/noise
     * I don't care about Node/Cluster specifics, but I might if I need to debug
 1. Bouncing about between EKS dashboard and UI in Backstage
