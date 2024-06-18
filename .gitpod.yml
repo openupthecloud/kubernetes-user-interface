@@ -5,7 +5,7 @@ tasks:
       touch backend/config.yml
       cd backend
       npm install
-      node node.js
+      npm run start
 
   - name: frontend
     command: |
