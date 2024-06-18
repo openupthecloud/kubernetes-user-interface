@@ -16,7 +16,7 @@ app.get('/pods/:namespace', async (request: Request, response: Response) => {
     try {
         const namespace = request.params.namespace || "default"
         const readNamespaceRes = await k8sApi.listNamespacedPod(namespace);
-        console.log(readNamespaceRes.body.items)
+        // console.log(readNamespaceRes.body.items)
         const result = readNamespaceRes.body.items.map((response: V1Pod) => ({
             name: response?.metadata?.name,
             created: response?.metadata?.creationTimestamp,
@@ -39,7 +39,7 @@ app.get('/services/:namespace', async (request: Request, response: Response) => 
     try {
         const namespace = request.params.namespace || "default"
         const readNamespaceRes = await k8sApi.listNamespacedService(namespace);
-        console.log(readNamespaceRes.body.items)
+        // console.log(readNamespaceRes.body.items)
         const result = readNamespaceRes.body.items
             .filter((response: V1Service) => response?.status?.loadBalancer?.ingress)
             .map((response: V1Service) => ({
@@ -59,7 +59,7 @@ app.get('/nodes/:namespace', async (request: Request, response: Response) => {
     try {
         const namespace = request.params.namespace || "default"
         const readNamespaceRes = await k8sApi.listNode(namespace);
-        console.log(readNamespaceRes.body.items)
+        // console.log(readNamespaceRes.body.items)
         const result = readNamespaceRes.body.items
             .map((response: V1Node) => ({
                 timestamp: response?.metadata?.creationTimestamp,
@@ -75,16 +75,21 @@ app.get('/nodes/:namespace', async (request: Request, response: Response) => {
     }
 });
 
-app.get('/deployments/:namespace', async (request: Request, response: Response) => {
+// app.get('/pods/:namespace', async (request: Request, response: Response) => {
+
+// });
+
+app.get('/apis/apps/v1/namespaces/:namespace/deployments', async (request: Request, response: Response) => {
     try {
+        // TODO: Do we need this? 
         const namespace = request.params.namespace || "default"
-        const readNamespaceRes = await appsV1Api.listNamespacedDeployment(namespace);
-        const result = readNamespaceRes.body.items.map((response: V1Deployment) => ({
-            name: response?.metadata?.name,
-            conditions: response?.status?.conditions?.map((condition: V1DeploymentCondition) => ({
-                message: condition.message
-            })),
-        }))
+        const result = await appsV1Api.listNamespacedDeployment(namespace);
+        // const result = readNamespaceRes.body.items.map((response: V1Deployment) => ({
+        //     name: response?.metadata?.name,
+        //     conditions: response?.status?.conditions?.map((condition: V1DeploymentCondition) => ({
+        //         message: condition.message
+        //     })),
+        // }))
         response.send(result);
     } catch (err) {
         console.error('err', err);
@@ -110,7 +115,7 @@ app.get('/events/:namespace', async (request: Request, response: Response) => {
     try {
         const namespace = request.params.namespace || "default"
         const readNamespaceRes = await k8sApi.listNamespacedEvent(namespace);
-        console.log(readNamespaceRes.body.items)
+        // console.log(readNamespaceRes.body.items)
         const result = readNamespaceRes.body.items.map((response: CoreV1Event) => ({
             message: response.message,
             object: response.involvedObject.kind,

@@ -22,8 +22,8 @@ class DataService {
     }
 
     async getDeployments() {
-        const { data } = await axios.get(`http://localhost:3002/deployments/${this.namespace}`)
-        return data;
+        const result = await axios.get(`http://localhost:3002/apis/apps/v1/namespaces/${this.namespace}/deployments`)
+        return result.data.response.body.items;
     }
 
     async getEvents() {

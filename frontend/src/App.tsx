@@ -100,10 +100,10 @@ function App() {
                 {
                   deployments.map((deployment: any, index) => {
                     return <TableRowComponent index={index}>
-                      <TableCellComponent bold>{deployment.name}</TableCellComponent>
+                      <TableCellComponent bold>{deployment.metadata.name}</TableCellComponent>
                       <TableCellComponent>
                         {
-                          deployment.conditions.map((condition: any, index: number) => (
+                          deployment.status.conditions.map((condition: any, index: number) => (
                             <div key={index}><span>{condition.message}</span><br /></div>)
                           )
                         }
