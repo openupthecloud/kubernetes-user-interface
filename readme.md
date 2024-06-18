@@ -23,7 +23,7 @@ There is a GitHub organisation of [Kubernetes Clients](https://github.com/kubern
 **This iteration:**
 1. Update README
 1. Include POSTMAN collection for K8s APIs
-1. Get TypeScript shapes onto the frontend (passthrough proxy)
+1. Fix frontend routing
 1. Ensure it can be deployed on a cluster (to read the cluster itself)
 
 **Next iteration:**

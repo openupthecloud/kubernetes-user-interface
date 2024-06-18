@@ -7,15 +7,21 @@ import { HeaderComponent } from './components/HeaderComponent'
 import { EmptyComponent } from './components/EmptyComponent'
 import { MessageIcon } from './components/MessageIcon'
 
-function App() {
+import { Deployment } from './services/DataService'
+import { Pod } from './services/DataService'
+import { Node } from './services/DataService'
+import { Event } from './services/DataService'
+import { Service } from './services/DataService'
+import { Namespace } from './services/DataService'
 
-  const [pods, setPods] = useState([]);
-  const [nodes, setNodes] = useState([]);
-  const [deployments, setDeployments] = useState([]);
-  const [events, setEvents] = useState([]);
-  const [services, setServices] = useState([]);
-  const [namespace, setNamespace] = useState("default");
-  const [namespaces, setNamespaces] = useState([{ name: "default", labels: [] }]);
+function App() {
+  const [pods, setPods] = useState<Pod[]>([]);
+  const [nodes, setNodes] = useState<Node[]>([]);
+  const [deployments, setDeployments] = useState<Deployment[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [services, setServices] = useState<Service[]>([]);
+  const [namespace, setNamespace] = useState<string>("default");
+  const [namespaces, setNamespaces] = useState<Namespace[]>([{ name: "default", labels: [] }]);
 
   // TODO: Think of better name for function
   const updateNamespaces = (value: string) => {
@@ -71,7 +77,7 @@ function App() {
             <div className="col-span-2 col-start-11">
               <select onChange={(e) => updateNamespaces(e.currentTarget.value)} className="w-full text-center rounded-lg float-right">
                 {
-                  namespaces.map((namespace: any, index) => {
+                  namespaces.map((namespace, index) => {
                     return <option key={index} value={namespace.name}>{namespace.name}</option>
                   })
                 }
@@ -98,12 +104,12 @@ function App() {
               ]} />
               <tbody>
                 {
-                  deployments.map((deployment: any, index) => {
+                  deployments.map((deployment, index) => {
                     return <TableRowComponent index={index}>
                       <TableCellComponent bold>{deployment.name}</TableCellComponent>
                       <TableCellComponent>
                         {
-                          deployment.conditions.map((condition: any, index: number) => (
+                          deployment.conditions.map((condition, index: number) => (
                             <div key={index}><span>{condition.message}</span><br /></div>)
                           )
                         }
@@ -130,7 +136,7 @@ function App() {
               ]} />
               <tbody>
                 {
-                  services.map((services: any, index) => {
+                  services.map((services, index) => {
                     return <TableRowComponent index={index}>
                       <TableCellComponent bold>{services.name}</TableCellComponent>
                       <TableCellComponent>
@@ -163,7 +169,7 @@ function App() {
               ]} />
               <tbody>
                 {
-                  pods.map((pod: any, index) => {
+                  pods.map((pod, index) => {
                     return <TableRowComponent index={index}>
                       <TableCellComponent bold>{pod.name}</TableCellComponent>
                       <TableCellComponent bold>
@@ -194,7 +200,7 @@ function App() {
             refresh={() => { dataServiceInstance.getEvents().then(setEvents) }}
             count={events.length}
           />
-          <EmptyComponent condition={() => pods.length > 0}><TableComponent>
+          <EmptyComponent condition={() => events.length > 0}><TableComponent>
             <TableHeaderComponent headers={[
               "event",
               "object",
@@ -203,7 +209,7 @@ function App() {
             ]} />
             <tbody>
               {
-                events.map((event: any, index) => {
+                events.map((event, index) => {
                   return <TableRowComponent index={index}>
                     <TableCellComponent>
                       <p>
@@ -236,7 +242,7 @@ function App() {
             refresh={() => { dataServiceInstance.getNodes().then(setNodes) }}
             count={nodes.length}
           />
-          <EmptyComponent condition={() => pods.length > 0}><TableComponent>
+          <EmptyComponent condition={() => nodes.length > 0}><TableComponent>
             <TableHeaderComponent headers={[
               "created timestamp",
               "capacity - pods",
@@ -245,7 +251,7 @@ function App() {
             ]} />
             <tbody>
               {
-                nodes.map((node: any, index) => {
+                nodes.map((node, index) => {
                   return <TableRowComponent index={index}>
 
                     <TableCellComponent bold>

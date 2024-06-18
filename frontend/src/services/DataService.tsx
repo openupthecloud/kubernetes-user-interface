@@ -1,5 +1,51 @@
 import axios from 'axios';
 
+// TODO: These types should be exposed from the backend, not frontend
+type Deployment = {
+    name: string,
+    conditions: DeploymentConditions[]
+}
+
+type DeploymentConditions = {
+    message: string
+}
+
+type Pod = {
+    name: string,
+    phase: string,
+    created: string,
+    labels: string[]
+}
+
+type Node = {
+    timestamp: Date,
+    capacity: NodeCapacity
+}
+
+type NodeCapacity = {
+    cpu: number,
+    pods: number
+}
+
+type Event = {
+    timestamp: Date,
+    name: string,
+    object: string,
+    message: string,
+    conditions: DeploymentConditions[]
+}
+
+type Service = {
+    name: string,
+    status: string,
+    port: number
+}
+
+type Namespace = {
+    name: string,
+    labels: string[]
+}
+
 class DataService {
     namespace: string;
 
@@ -21,7 +67,7 @@ class DataService {
         return data;
     }
 
-    async getDeployments() {
+    async getDeployments(): Promise<Deployment[]> {
         const { data } = await axios.get(`http://localhost:3002/deployments/${this.namespace}`)
         return data;
     }
@@ -44,4 +90,5 @@ class DataService {
 
 const dataServiceInstance = new DataService();
 
+export type { Deployment, Pod, Node, Event, Service, Namespace }
 export { dataServiceInstance }

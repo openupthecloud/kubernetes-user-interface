@@ -1,5 +1,12 @@
-// TODO: Add type
-const EmptyComponent = ({ children, condition }: { children: React.ReactNode, condition: any }) => {
+type Condition = () => boolean
+
+// TODO: is there a convention for this pattern?
+type EmptyComponentProps = {
+    children: React.ReactNode,
+    condition: Condition
+}
+
+const EmptyComponent = ({ children, condition }: EmptyComponentProps) => {
     return <>
         {condition() ?
             <>{children}</> :
