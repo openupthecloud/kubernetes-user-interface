@@ -1,5 +1,3 @@
-// TODO: Add types
-
 interface StatusMap {
     [key: string]: string
 }

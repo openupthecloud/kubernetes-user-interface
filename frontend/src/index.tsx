@@ -1,14 +1,43 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+import { DashboardComponent } from './components/DashboardComponent';
+import { PageHeaderComponent } from './components/PageHeaderComponent'
+import { AdminComponent } from './components/AdminComponent'
+
+// TODO: Add wrapping component
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <div>
+      <PageHeaderComponent />
+      <div className="container mx-auto px-12 py-12 h-full bg-gray-600">
+        <DashboardComponent />
+      </div>
+    </div >
+  },
+  {
+    path: "/admin",
+    element: <div>
+      <PageHeaderComponent />
+      <div className="container mx-auto px-12 py-12 h-full bg-gray-600">
+        <AdminComponent />
+      </div>
+    </div >
+  },
+]);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
 
