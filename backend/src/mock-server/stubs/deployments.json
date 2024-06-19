@@ -1,0 +1,10 @@
+[
+    {
+        "name": "deployment-123567",
+        "conditions": [
+            {
+                "message": "temp"
+            }
+        ]
+    }
+]

@@ -1,0 +1,9 @@
+[
+    {
+        "timestamp": "2024-06-19T06:50:15.619Z",
+        "name": "started-new-service",
+        "object": "service",
+        "message": "running healthy",
+        "conditions": "blah"
+    }
+]

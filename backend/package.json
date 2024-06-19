@@ -9,6 +9,7 @@
     "ts-node": "^10.9.2"
   },
   "scripts": {
-    "start": "npx nodemon src/index.ts"
+    "start": "npx nodemon src/index.ts",
+    "start-mock-server": "npx nodemon src/mock-server/index.ts"
   }
 }
