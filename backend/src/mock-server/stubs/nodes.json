@@ -1,6 +1,9 @@
 [
     {
         "timestamp": "2024-06-19T06:50:15.619Z",
-        "capacity": 2
+        "capacity": {
+            "cpu": 2,
+            "pods": 18
+        }
     }
 ]

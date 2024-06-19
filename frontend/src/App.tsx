@@ -244,10 +244,9 @@ function App() {
           />
           <EmptyComponent condition={() => nodes.length > 0}><TableComponent>
             <TableHeaderComponent headers={[
-              "created timestamp",
+              "created",
               "capacity - pods",
               "capacity - cpu",
-              "created"
             ]} />
             <tbody>
               {
